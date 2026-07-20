@@ -130,7 +130,7 @@ function Header() {
    Built with raw three.js (no react-three-fiber) so it can live
    inside a plain div + canvas.
 ------------------------------------------------------------------ */
-const RobotCanvas = React.lazy(() => import("./RobotCanvas.jsx"));
+const RobotCanvas = React.lazy(() => import("../Components/RobotCanvas"));
 
 /* ----------------------------------------------------------------
    Home page
