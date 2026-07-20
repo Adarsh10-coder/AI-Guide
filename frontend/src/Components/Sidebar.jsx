@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   FileSearch,
   Briefcase,
@@ -11,6 +11,23 @@ import {
 export default function Sidebar() {
   const [active, setActive] = useState("Resume analyser");
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    const pathToLabel = {
+      "/resume-analysis": "Resume analyser",
+      "/resume-builder": "Resume Builder",
+      "/chat": "Career Chatbot",
+      "/live-jobs": "Live jobs",
+      "/interview": "Mock interview",
+      "/dsa-tracker": "DSA tracker",
+      "/career-roadmap": "Career roadmap",
+      "/home": "Career roadmap",
+    };
+
+    const label = pathToLabel[location.pathname];
+    if (label) setActive(label);
+  }, [location.pathname]);
 
   const navItems = [
     { label: "Resume analyser", icon: FileSearch },
