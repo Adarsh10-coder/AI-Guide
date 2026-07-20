@@ -52,7 +52,11 @@ function Header() {
           {navItems.map((item) => (
             <button
               key={item}
-              onClick={() => setActive(item)}
+              onClick={() => {
+                setActive(item);
+                if (item === "Features") navigate("/resume-analysis");
+                else if (item === "Home") navigate("/home");
+              }}
               className={`text-base font-medium whitespace-nowrap transition-all duration-200 ease-out transform hover:scale-110 hover:-translate-y-0.5 origin-center ${
                 active === item
                   ? "text-[#B47EF0] drop-shadow-[0_0_8px_rgba(138,43,226,0.7)]"
@@ -136,6 +140,7 @@ const RobotCanvas = React.lazy(() => import("../Components/RobotCanvas"));
    Home page
 ------------------------------------------------------------------ */
 export default function Home() {
+  const navigate = useNavigate();
   const signals = [
     {
       icon: ListChecks,
@@ -229,9 +234,9 @@ export default function Home() {
               className="reveal flex flex-wrap items-center gap-3 mt-8"
               style={{ animationDelay: "480ms" }}
             >
-              <button className="px-5 py-2.5 rounded-xl bg-gradient-to-br from-[#8A2BE2] to-[#B47EF0] text-white text-sm font-medium shadow-lg shadow-[#8A2BE2]/30 hover:shadow-[#8A2BE2]/50 transition-shadow">
-                Lets's Start
-              </button>
+              <button onClick={() => navigate('/resume-analysis')} className="px-5 py-2.5 rounded-xl bg-gradient-to-br from-[#8A2BE2] to-[#B47EF0] text-white text-sm font-medium shadow-lg shadow-[#8A2BE2]/30 hover:shadow-[#8A2BE2]/50 transition-shadow">
+                  Lets's Start
+                </button>
             </div>
 
             {/* Signals — parallel streams feeding one guide, not a numbered sequence */}

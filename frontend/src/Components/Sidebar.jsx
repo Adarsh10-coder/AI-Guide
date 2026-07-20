@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   FileSearch,
   Briefcase,
@@ -9,6 +10,7 @@ import {
 
 export default function Sidebar() {
   const [active, setActive] = useState("Resume analyser");
+  const navigate = useNavigate();
 
   const navItems = [
     { label: "Resume analyser", icon: FileSearch },
@@ -29,7 +31,21 @@ export default function Sidebar() {
           return (
             <button
               key={label}
-              onClick={() => setActive(label)}
+              onClick={() => {
+                setActive(label);
+                // map label to route
+                const map = {
+                  "Resume analyser": "/resume-analysis",
+                  "Resume Builder": "/resume-builder",
+                  "Career Chatbot": "/chat",
+                  "Live jobs": "/live-jobs",
+                  "Mock interview": "/interview",
+                  "DSA tracker": "/dsa-tracker",
+                  "Career roadmap": "/career-roadmap",
+                };
+                const path = map[label] || "/home";
+                navigate(path);
+              }}
               className={`group relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ease-out ${
                 isActive
                   ? "text-white bg-gradient-to-r from-[#8A2BE2]/30 to-[#311432]/30 border border-[#8A2BE2]/40 shadow-[0_0_12px_rgba(138,43,226,0.25)]"
