@@ -44,7 +44,7 @@ export default function LoginPage() {
       return;
     }
 
-    navigate("/dashboard");
+    navigate("/home");
   };
 
   return (
@@ -121,7 +121,7 @@ export default function LoginPage() {
               Login to your account
             </p>
             <p className="font-body text-[13px] text-white/35 mt-2 max-w-xs leading-relaxed">
-              Securely access your dashboard and continue where you left off.
+              Securely access your home and continue where you left off.
             </p>
           </div>
         </div>

@@ -1,11 +1,15 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../AuthProvider";
 import { User, LogOut, Settings, BrainCircuit } from "lucide-react";
 
 export default function Header() {
-  const [active, setActive] = useState("Dashboard");
+  const [active, setActive] = useState("Home");
   const [menuOpen, setMenuOpen] = useState(false);
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
 
-  const navItems = ["Dashboard", "Features", "About"];
+  const navItems = ["Home", "Features", "About"];
 
   return (
     <header className="w-full sticky top-0 z-20 bg-[#0D0D0F]/80 backdrop-blur-xl border-b border-[#8A2BE2]/20 shadow-[0_1px_20px_rgba(0,0,0,0.3)]">
@@ -66,8 +70,8 @@ export default function Header() {
                   <User size={16} className="text-white" />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-sm font-medium text-white truncate">Guest user</p>
-                  <p className="text-xs text-white/50 truncate">guest@aiguide.com</p>
+                  <p className="text-sm font-medium text-white truncate">{user?.name || 'Guest user'}</p>
+                  <p className="text-xs text-white/50 truncate">{user?.email || 'guest@aiguide.com'}</p>
                 </div>
               </div>
               <div className="p-1.5">
@@ -77,7 +81,14 @@ export default function Header() {
                   </span>
                   Profile
                 </button>
-                <button className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm text-white/90 hover:bg-white/10 hover:text-[#B47EF0] transition-colors group">
+                <button
+                  onClick={async () => {
+                    setMenuOpen(false);
+                    await logout();
+                    navigate('/login');
+                  }}
+                  className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm text-white/90 hover:bg-white/10 hover:text-[#B47EF0] transition-colors group"
+                >
                   <span className="flex items-center justify-center w-7 h-7 rounded-lg bg-[#8A2BE2]/15 text-[#B47EF0] transition-colors">
                     <LogOut size={14} />
                   </span>

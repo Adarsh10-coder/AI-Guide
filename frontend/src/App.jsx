@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "./Pages/Auth/Login.jsx";
 import "./App.css";
 import SignUpPage from "./Pages/Auth/Signup.jsx";
-import Dashboard from "./Pages/Dashboard.jsx";
+import Home from "./Pages/Home.jsx";
 import ProtectedRoute from "./ProtectedRoute.jsx";
 
 function App() {
@@ -12,10 +12,10 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignUpPage />} />
         <Route
-          path="/dashboard"
+          path="/home"
           element={
             <ProtectedRoute>
-              <Dashboard />
+              <Home />
             </ProtectedRoute>
           }
         />

@@ -14,9 +14,10 @@ export default function Sidebar() {
     { label: "Resume analyser", icon: FileSearch },
     { label: "Live jobs", icon: Briefcase },
     { label: "Mock interview", icon: Mic },
+    { label: "Career Chatbot", icon: Map },
     { label: "DSA tracker", icon: Code2 },
+    { label: "Resume Builder", icon: FileSearch },
     { label: "Career roadmap", icon: Map },
-    
   ];
 
   return (
