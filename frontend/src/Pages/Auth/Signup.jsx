@@ -44,7 +44,7 @@ export default function SignUpPage() {
       return;
     }
 
-    navigate("/dashboard");
+    navigate("/login");
   };
 
   return (

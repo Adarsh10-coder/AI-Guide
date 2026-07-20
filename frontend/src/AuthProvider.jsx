@@ -67,8 +67,8 @@ export function AuthProvider({ children }) {
         return { success: false, message: data.message || "Signup failed" };
       }
 
-      setUser(data.user);
-      return { success: true, user: data.user };
+      // Do not auto-set the user after signup so the user can explicitly log in.
+      return { success: true };
     } catch (error) {
       return { success: false, message: "Network error" };
     }
