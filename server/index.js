@@ -34,6 +34,7 @@ mongoose.connect(mongoUri)
   .catch((err) => console.error("MongoDB connection failed:", err));
 
 app.use("/api/auth", require("./routes/authRoutes"));
+app.use("/", require("./routes/resumeRoute"));
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
