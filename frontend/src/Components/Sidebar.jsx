@@ -9,20 +9,20 @@ import {
 } from "lucide-react";
 
 export default function Sidebar() {
-  const [active, setActive] = useState("Resume analyser");
+  const [active, setActive] = useState("Resume Analyzer");
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
     const pathToLabel = {
-      "/resume-analysis": "Resume analyser",
+      "/resume-analysis": "Resume Analyzer",
       "/resume-builder": "Resume Builder",
       "/chat": "Career Chatbot",
       "/live-jobs": "Live jobs",
       "/interview": "Mock interview",
       "/dsa-tracker": "DSA tracker",
       "/career-roadmap": "Career roadmap",
-      "/home": "Career roadmap",
+      "/home": "Resume Analyzer",
     };
 
     const label = pathToLabel[location.pathname];
@@ -30,7 +30,7 @@ export default function Sidebar() {
   }, [location.pathname]);
 
   const navItems = [
-    { label: "Resume analyser", icon: FileSearch },
+    { label: "Resume Analyzer", icon: FileSearch },
     { label: "Live jobs", icon: Briefcase },
     { label: "Mock interview", icon: Mic },
     { label: "Career Chatbot", icon: Map },
@@ -40,7 +40,7 @@ export default function Sidebar() {
   ];
 
   return (
-    <aside className="h-screen w-64 shrink-0 bg-[#0D0D0F]/95 backdrop-blur-xl border-r border-[#8A2BE2]/20 flex flex-col">
+    <aside className="h-full w-64 shrink-0 bg-[#0D0D0F]/95 backdrop-blur-xl border-r border-[#8A2BE2]/20 flex flex-col">
       {/* Nav items */}
       <nav className="flex-1 px-3 py-4 flex flex-col gap-1">
         {navItems.map(({ label, icon: Icon }) => {
@@ -52,7 +52,7 @@ export default function Sidebar() {
                 setActive(label);
                 // map label to route
                 const map = {
-                  "Resume analyser": "/resume-analysis",
+                  "Resume Analyzer": "/resume-analysis",
                   "Resume Builder": "/resume-builder",
                   "Career Chatbot": "/chat",
                   "Live jobs": "/live-jobs",
