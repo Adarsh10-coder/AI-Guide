@@ -12,8 +12,8 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use(cors({
-    origin: "http://localhost:5173",
-    credentials: true,
+  origin: "http://localhost:5173",
+  credentials: true,
 }));
 
 const rawMongoUri = process.env.MONGO_URI;
@@ -39,4 +39,4 @@ app.use("/", require("./routes/resumeRoute"));
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server Running on port ${PORT}`);
-});
+}); ``

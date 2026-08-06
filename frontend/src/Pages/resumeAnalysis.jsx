@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import { Info, FileText, X, UploadCloud, Sparkles } from "lucide-react";
+import ResumeAnalyzeView from "../Features/analyze.jsx";
 
 /* ----------------------------------------------------------------
    Same design tokens as the AI Guide homepage
@@ -19,6 +20,9 @@ export default function ResumeAnalyzeForm() {
 		jobDescription: "",
 		file: "",
 	});
+	const [analysisResult, setAnalysisResult] = useState(null);
+	const [apiError, setApiError] = useState("");
+	const [isAnalyzing, setIsAnalyzing] = useState(false);
 	const inputRef = useRef(null);
 
 	const handleFileChange = (e) => {
@@ -52,25 +56,49 @@ export default function ResumeAnalyzeForm() {
 			jobDescription: jobDescription.trim() ? "" : "Job description is required",
 			file: file ? "" : "Please upload your resume",
 		};
+
 		setErrors(nextErrors);
 		const hasError = Object.values(nextErrors).some(Boolean);
 		if (hasError) return;
+
+		setIsAnalyzing(true);
+		setApiError("");
+		setAnalysisResult(null);
+
 		const formData = new FormData();
 		formData.append("resume", file);
 		formData.append("company", company);
 		formData.append("jobTitle", jobTitle);
 		formData.append("jobDescription", jobDescription);
+
 		try {
 			const res = await fetch("http://localhost:5000/resumeAnalysis", {
 				method: "POST",
 				body: formData,
 			});
 			const data = await res.json();
-			console.log(data);
+
+			if (!res.ok) {
+				throw new Error(data.message || "Failed to analyze resume");
+			}
+
+			setAnalysisResult(data.data || null);
 		} catch (err) {
-			console.log(err);
+			setApiError(err.message || "Something went wrong while analyzing your resume.");
+		} finally {
+			setIsAnalyzing(false);
 		}
 	};
+
+	if (analysisResult) {
+		return (
+			<ResumeAnalyzeView
+				analysisData={analysisResult}
+				file={file}
+				onReset={() => setAnalysisResult(null)}
+			/>
+		);
+	}
 
 	return (
 		<div className="min-h-screen w-full bg-[#0D0D0F] text-[#F3F0F7] relative overflow-hidden">
@@ -240,10 +268,15 @@ export default function ResumeAnalyzeForm() {
 							<button
 								type="button"
 								onClick={handleAnalyze}
-								className="w-full rounded-xl bg-gradient-to-br from-[#8A2BE2] to-[#B47EF0] text-white text-sm font-medium py-3.5 shadow-md shadow-[#8A2BE2]/20 hover:shadow-[#8A2BE2]/35 hover:-translate-y-0.5 transition-all"
+								disabled={isAnalyzing}
+								className={`w-full rounded-xl bg-gradient-to-br from-[#8A2BE2] to-[#B47EF0] text-white text-sm font-medium py-3.5 shadow-md shadow-[#8A2BE2]/20 hover:shadow-[#8A2BE2]/35 hover:-translate-y-0.5 transition-all ${isAnalyzing ? "cursor-not-allowed opacity-70 shadow-none hover:shadow-[#8A2BE2]/20 hover:-translate-y-0" : ""}`}
 							>
-								Analyze Resume
+								{isAnalyzing ? "Analyzing resume…" : "Analyze Resume"}
 							</button>
+
+							{apiError ? (
+								<p className="mt-4 text-sm text-rose-400">{apiError}</p>
+							) : null}
 						</div>
 					</div>
 				</div>
