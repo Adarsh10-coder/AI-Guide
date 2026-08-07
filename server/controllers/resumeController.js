@@ -1,6 +1,23 @@
 const fs = require("fs");
-const pdfParse = require("pdf-parse");
+const pdfParseModule = require("pdf-parse");
 const ai = require("../services/gemini");
+
+const extractPdfText = async (buffer) => {
+    if (typeof pdfParseModule === "function") {
+        const result = await pdfParseModule(buffer);
+        return result.text?.trim() || "";
+    }
+    if (pdfParseModule && pdfParseModule.PDFParse) {
+        const parser = new pdfParseModule.PDFParse({ data: buffer });
+        const result = await parser.getText();
+        return (typeof result === "string" ? result : result.text || "")?.trim() || "";
+    }
+    if (pdfParseModule && typeof pdfParseModule.default === "function") {
+        const result = await pdfParseModule.default(buffer);
+        return result.text?.trim() || "";
+    }
+    return "";
+};
 
 const extractJsonObject = (text) => {
     if (!text) throw new Error("Empty response from AI");
@@ -261,8 +278,7 @@ const analyzeResume = async (req, res) => {
         const buffer = fs.readFileSync(req.file.path);
         let resumeText = "";
         try {
-            const result = await pdfParse(buffer);
-            resumeText = result.text?.trim() || "";
+            resumeText = await extractPdfText(buffer);
         } catch (pdfErr) {
             console.warn("PDF text parsing warning:", pdfErr);
         }

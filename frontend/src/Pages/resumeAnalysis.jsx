@@ -154,8 +154,8 @@ export default function ResumeAnalyzeForm() {
 										if (errors.company) setErrors((prev) => ({ ...prev, company: "" }));
 									}}
 									className={`mt-2 w-full rounded-xl bg-transparent border px-4 py-3 text-sm text-white placeholder-white/30 outline-none transition-all ${errors.company
-											? "border-rose-400/70 focus:border-rose-400/70 focus:shadow-[0_0_0_3px_rgba(248,113,113,0.15)]"
-											: "border-white/15 focus:border-[#8A2BE2]/70 focus:shadow-[0_0_0_3px_rgba(138,43,226,0.15)]"
+										? "border-rose-400/70 focus:border-rose-400/70 focus:shadow-[0_0_0_3px_rgba(248,113,113,0.15)]"
+										: "border-white/15 focus:border-[#8A2BE2]/70 focus:shadow-[0_0_0_3px_rgba(138,43,226,0.15)]"
 										}`}
 									placeholder="e.g. PixelForge Studio"
 								/>
@@ -173,8 +173,8 @@ export default function ResumeAnalyzeForm() {
 										if (errors.jobTitle) setErrors((prev) => ({ ...prev, jobTitle: "" }));
 									}}
 									className={`mt-2 w-full rounded-xl bg-transparent border px-4 py-3 text-sm text-white placeholder-white/30 outline-none transition-all ${errors.jobTitle
-											? "border-rose-400/70 focus:border-rose-400/70 focus:shadow-[0_0_0_3px_rgba(248,113,113,0.15)]"
-											: "border-white/15 focus:border-[#8A2BE2]/70 focus:shadow-[0_0_0_3px_rgba(138,43,226,0.15)]"
+										? "border-rose-400/70 focus:border-rose-400/70 focus:shadow-[0_0_0_3px_rgba(248,113,113,0.15)]"
+										: "border-white/15 focus:border-[#8A2BE2]/70 focus:shadow-[0_0_0_3px_rgba(138,43,226,0.15)]"
 										}`}
 									placeholder="e.g. Full Stack Developer"
 								/>
@@ -193,8 +193,8 @@ export default function ResumeAnalyzeForm() {
 									}}
 									rows={5}
 									className={`mt-2 w-full rounded-xl bg-transparent border px-4 py-3 text-sm text-white placeholder-white/30 outline-none transition-all resize-none leading-relaxed ${errors.jobDescription
-											? "border-rose-400/70 focus:border-rose-400/70 focus:shadow-[0_0_0_3px_rgba(248,113,113,0.15)]"
-											: "border-white/15 focus:border-[#8A2BE2]/70 focus:shadow-[0_0_0_3px_rgba(138,43,226,0.15)]"
+										? "border-rose-400/70 focus:border-rose-400/70 focus:shadow-[0_0_0_3px_rgba(248,113,113,0.15)]"
+										: "border-white/15 focus:border-[#8A2BE2]/70 focus:shadow-[0_0_0_3px_rgba(138,43,226,0.15)]"
 										}`}
 									placeholder="Paste the job description here..."
 								/>
@@ -216,10 +216,10 @@ export default function ResumeAnalyzeForm() {
 									onDragLeave={() => setDragOver(false)}
 									onDrop={handleDrop}
 									className={`mt-2 rounded-xl border ${dragOver
-											? "border-[#8A2BE2]/70 bg-[#8A2BE2]/[0.06]"
-											: errors.file
-												? "border-rose-400/70 bg-rose-500/10"
-												: "border-white/15 bg-transparent"
+										? "border-[#8A2BE2]/70 bg-[#8A2BE2]/[0.06]"
+										: errors.file
+											? "border-rose-400/70 bg-rose-500/10"
+											: "border-white/15 bg-transparent"
 										} px-5 py-8 transition-colors`}
 								>
 									{!file ? (

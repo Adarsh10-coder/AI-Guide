@@ -1,30 +1,17 @@
 import { useState } from "react";
-import { Mail, Lock, Eye, EyeOff, Sparkles } from "lucide-react";
+import {
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+  Sparkles,
+  ArrowRight,
+  ShieldCheck,
+  Activity,
+} from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../AuthProvider";
-import loginImg from "../../assets/login.png";
-
-// Neural network node layout
-const nodes = [
-  { id: "i1", x: 50, y: 90, layer: 0 },
-  { id: "i2", x: 50, y: 190, layer: 0 },
-  { id: "i3", x: 50, y: 290, layer: 0 },
-  { id: "h1a", x: 190, y: 50, layer: 1 },
-  { id: "h1b", x: 190, y: 150, layer: 1 },
-  { id: "h1c", x: 190, y: 250, layer: 1 },
-  { id: "h1d", x: 190, y: 340, layer: 1 },
-  { id: "h2a", x: 330, y: 100, layer: 2 },
-  { id: "h2b", x: 330, y: 210, layer: 2 },
-  { id: "h2c", x: 330, y: 310, layer: 2 },
-  { id: "o1", x: 460, y: 150, layer: 3 },
-  { id: "o2", x: 460, y: 260, layer: 3 },
-];
-
-const byLayer = (n) => nodes.filter((node) => node.layer === n);
-const edges = [];
-for (let l = 0; l < 3; l++) {
-  byLayer(l).forEach((a) => byLayer(l + 1).forEach((b) => edges.push({ a, b })));
-}
+import Login3D from "../../Components/Ai3dCanvas";
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -32,185 +19,226 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setError("");
 
-    const result = await login(email.trim(), password);
-    if (!result.success) {
-      setError(result.message);
+    if (!email || !password) {
+      setError("Please fill in all fields.");
       return;
     }
 
-    navigate("/home");
+    setLoading(true);
+    try {
+      const result = await login(email.trim(), password);
+      if (!result.success) {
+        setError(result.message || "Invalid credentials. Please try again.");
+      } else {
+        navigate("/home");
+      }
+    } catch (err) {
+      setError("An unexpected error occurred. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="min-h-screen w-full bg-[#08070C] flex relative overflow-hidden">
+    <div className="min-h-screen w-full bg-[#EBF0F5] flex items-center justify-center p-4 sm:p-6 md:p-10 font-body relative overflow-hidden">
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=Space+Grotesk:wght@600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap');
 
-        .font-display { font-family: 'Space Grotesk', sans-serif; }
+        .font-headline { font-family: 'Syne', 'Space Grotesk', sans-serif; }
+        .font-display { font-family: 'Plus Jakarta Sans', sans-serif; }
         .font-body { font-family: 'Inter', sans-serif; }
 
-        @keyframes pulseDot {
-          0%, 100% { opacity: 0.4; }
-          50% { opacity: 1; }
+        @keyframes titleFloat {
+          0%, 100% { transform: translateY(0px) scale(1); }
+          50% { transform: translateY(-6px) scale(1.015); }
         }
-        @keyframes flowLine {
-          0% { stroke-dashoffset: 24; }
-          100% { stroke-dashoffset: 0; }
+        @keyframes floatBlur1 {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          50% { transform: translate(15px, -15px) scale(1.08); }
         }
-        @keyframes rotateAura {
-          to { transform: rotate(360deg); }
-        }
-        @keyframes driftGlow {
-          0%, 100% { transform: translate(0, 0); }
-          50% { transform: translate(20px, -15px); }
-        }
-        @keyframes floatChip {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-6px); }
-        }
-        .nn-node { animation: pulseDot 3.2s ease-in-out infinite; }
-        .nn-edge { stroke-dasharray: 6 6; animation: flowLine 1.6s linear infinite; }
-        .aura-spin { animation: rotateAura 7s linear infinite; }
-        .drift-1 { animation: driftGlow 9s ease-in-out infinite; }
-        .drift-2 { animation: driftGlow 11s ease-in-out infinite reverse; }
-        .float-chip { animation: floatChip 4s ease-in-out infinite; }
-
-        @media (prefers-reduced-motion: reduce) {
-          .nn-node, .nn-edge, .aura-spin, .drift-1, .drift-2, .float-chip { animation: none; }
+        @keyframes floatBlur2 {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          50% { transform: translate(-12px, 12px) scale(0.95); }
         }
 
-        .input-glow:focus-within {
-          box-shadow: 0 0 0 3px rgba(154, 92, 246, 0.22), 0 0 20px rgba(154, 92, 246, 0.15);
+        .animate-title-float { animation: titleFloat 4s ease-in-out infinite; }
+        .animate-float-blur-1 { animation: floatBlur1 8s ease-in-out infinite; }
+        .animate-float-blur-2 { animation: floatBlur2 10s ease-in-out infinite; }
+
+        .input-pill {
+          transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .input-pill:focus-within {
+          border-color: #F59E0B;
+          box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.12);
         }
       `}</style>
 
-      {/* ambient background texture */}
-      <div
-        className="pointer-events-none absolute inset-0"
-        style={{
-          backgroundImage:
-            "radial-gradient(rgba(255,255,255,0.035) 1px, transparent 1px)",
-          backgroundSize: "28px 28px",
-        }}
-      />
-      <div className="drift-1 pointer-events-none absolute -top-32 -left-20 w-[420px] h-[420px] rounded-full bg-[#8A5CF6]/20 blur-[110px]" />
-      <div className="drift-2 pointer-events-none absolute bottom-[-140px] right-[-80px] w-[380px] h-[380px] rounded-full bg-[#5B2A9E]/25 blur-[110px]" />
+      {/* Main Container Card */}
+      <div className="w-full max-w-6xl bg-white rounded-[32px] md:rounded-[40px] shadow-[0_20px_70px_rgba(0,0,0,0.07)] border border-white/80 p-3 md:p-5 relative z-10 flex flex-col md:flex-row min-h-[640px]">
 
-      {/* Left: AI neural network illustration */}
-      <div className="hidden md:flex w-1/2 items-center justify-center p-10 relative z-10">
-        <div className="relative w-full max-w-md">
-          <div className="float-chip inline-flex items-center gap-2 mb-6 px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/10 backdrop-blur-sm">
-            <Sparkles size={13} className="text-[#C9A6FF]" />
-            <span className="font-body text-[11px] tracking-wide text-white/60">
-              AI-powered access
-            </span>
+        {/* ================= LEFT SECTION (Yellow card with 3D AI Components) ================= */}
+        <div className="w-full md:w-[48%] bg-gradient-to-br from-[#FFD95A] via-[#FFC107] to-[#F59E0B] rounded-[28px] md:rounded-[34px] p-8 md:p-10 relative overflow-hidden flex flex-col justify-between min-h-[380px] md:min-h-[580px] shadow-inner">
+
+          {/* Depth-of-field soft blurred 3D background shapes */}
+          <div className="animate-float-blur-1 absolute top-8 left-8 w-24 h-24 rounded-full bg-white/40 blur-xl pointer-events-none" />
+          <div className="animate-float-blur-2 absolute bottom-12 left-10 w-32 h-16 rounded-full bg-[#FFE699]/60 blur-xl pointer-events-none" />
+          <div className="animate-float-blur-1 absolute top-1/2 right-4 w-28 h-28 rounded-full bg-[#FF9800]/30 blur-2xl pointer-events-none" />
+
+          {/* Top Left Mini Sparkle Icon */}
+          <div className="relative z-20 flex items-center justify-between">
+            <div className="w-9 h-9 rounded-xl bg-black/10 backdrop-blur-md border border-black/10 flex items-center justify-center text-gray-900 shadow-sm">
+              <Sparkles size={18} className="text-gray-900" />
+            </div>
           </div>
 
-          <div className="overflow-hidden rounded-[28px] border border-white/10 shadow-[0_0_40px_rgba(0,0,0,0.18)]">
-            <img src={loginImg} alt="Login illustration" className="w-full h-auto object-cover" />
+          {/* Animated AI Guide Typography & Paragraph */}
+          <div className="relative z-20 mt-2 md:mt-4">
+            <h1 className="animate-title-float font-headline text-5xl sm:text-6xl md:text-7xl font-extrabold text-[#0F172A] leading-[1.02] tracking-tight drop-shadow-sm select-none">
+              AI <br /> Guide
+            </h1>
+            <p className="font-body text-[#1E293B] text-xs sm:text-sm font-semibold mt-3 max-w-xs leading-relaxed">
+              Experience the next-gen intelligent career workspace powered by neural models.
+            </p>
           </div>
 
-          <div className="mt-6">
-            <p className="font-display text-xl font-medium bg-gradient-to-r from-white to-[#C9A6FF] bg-clip-text text-transparent">
-              Login to your account
-            </p>
-            <p className="font-body text-[13px] text-white/35 mt-2 max-w-xs leading-relaxed">
-              Securely access your home and continue where you left off.
-            </p>
+          {/* Center Interactive 3D AI Component Canvas */}
+          <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-auto">
+            <div className="w-full h-full max-w-md max-h-md">
+              <Login3D />
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Right: login form */}
-      <div className="w-full md:w-1/2 flex items-center justify-center px-6 py-12 relative z-10">
-        <div className="w-full max-w-sm relative rounded-[28px] p-[1.5px] overflow-hidden">
-          {/* rotating aura border */}
-          <div
-            className="aura-spin absolute -inset-[60%]"
-            style={{
-              background:
-                "conic-gradient(from 0deg, transparent 0%, #8A5CF6 12%, transparent 28%, transparent 60%, #C9A6FF 72%, transparent 88%)",
-            }}
-          />
+        {/* ================= RIGHT SECTION (Login Form) ================= */}
+        <div className="w-full md:w-[52%] p-6 sm:p-8 md:p-12 flex flex-col justify-between relative bg-white rounded-[32px] md:rounded-[40px]">
 
-          <div className="relative z-10 rounded-[26px] bg-[#0D0C13]/95 backdrop-blur-xl px-8 py-9 border border-white/[0.06]">
-            <div className="text-center mb-8">
-              <h2 className="font-display inline-block text-[28px] font-semibold tracking-wide bg-gradient-to-r from-white to-[#C9A6FF] bg-clip-text text-transparent">
+          {/* Top Bar: Green "AUTHENTICATION LIVE SERVER" Badge + Right Emoji Badge */}
+          <div className="flex items-center justify-between mb-4">
+            {/* Green Theme Live Server Authentication Badge */}
+            <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200/80 text-emerald-700 shadow-xs">
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+              </span>
+              <span className="font-display text-[11px] font-bold tracking-wider uppercase flex items-center gap-1.5">
+                <ShieldCheck size={14} className="text-emerald-600" />
+                AUTHENTICATION
+              </span>
+            </div>
+
+            {/* Top Right Emoji Face Avatar Badge */}
+            <div className="w-10 h-10 rounded-full bg-[#FFC93C] flex items-center justify-center shadow-md hover:scale-105 transition-transform duration-200 cursor-pointer">
+              <span className="text-xl select-none">😃</span>
+            </div>
+          </div>
+
+          {/* Form Area */}
+          <div className="w-full max-w-md mx-auto my-auto">
+
+            {/* Attractive Welcome Back Header right above email */}
+            <div className="text-center mb-8 relative">
+              {/* Subtle ambient glow behind text */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-12 bg-amber-400/10 blur-xl rounded-full pointer-events-none" />
+
+              <h2 className="font-headline text-4xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-gray-900 via-gray-800 to-[#F59E0B] tracking-tight mb-2 leading-tight">
                 Welcome back
               </h2>
-              <p className="font-body text-[12.5px] text-white/35 mt-1.5">
-                Sign in to pick up where you left off
+              <p className="font-body text-xs sm:text-sm font-semibold text-gray-500 flex items-center justify-center gap-1.5">
+                <span>Please enter your credentials to Login</span>
               </p>
             </div>
 
-            <form className="space-y-4" onSubmit={handleSubmit} autoComplete="off">
+            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5" autoComplete="off">
+              {/* Prevent Chrome auto-fill artifact inputs */}
               <input type="text" name="prevent_autofill_username" autoComplete="username" style={{ display: "none" }} readOnly tabIndex={-1} />
               <input type="password" name="prevent_autofill_password" autoComplete="new-password" style={{ display: "none" }} readOnly tabIndex={-1} />
 
+              {/* Email Input */}
               <div>
-                <label className="font-body block text-[11px] font-medium text-white/50 mb-1.5 tracking-wide uppercase">
-                  Email
+                <label className="font-body block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wider">
+                  Email Address
                 </label>
-                <div className="input-glow relative rounded-xl transition-shadow">
-                  <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#B47EF0]" />
+                <div className="input-pill relative rounded-2xl border border-gray-200 bg-gray-50/70 hover:bg-gray-50 transition-all">
+                  <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
                   <input
                     type="email"
                     name="email"
-                    autoComplete="off"
                     placeholder="you@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="font-body w-full bg-white/[0.03] border border-white/10 rounded-xl pl-10 pr-3 py-2.5 text-sm text-white placeholder-white/25 outline-none focus:border-[#8A5CF6]/60 transition-colors"
+                    className="font-body w-full bg-transparent pl-11 pr-4 py-3.5 text-sm text-gray-800 placeholder-gray-400 outline-none rounded-2xl font-medium"
+                    required
                   />
                 </div>
               </div>
 
+              {/* Password Input */}
               <div>
-                <label className="font-body block text-[11px] font-medium text-white/50 mb-1.5 tracking-wide uppercase">
-                  Password
-                </label>
-                <div className="input-glow relative rounded-xl transition-shadow">
-                  <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#B47EF0]" />
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="font-body block text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                    Password
+                  </label>
+                  <a href="#" className="font-body text-xs text-[#F59E0B] font-semibold hover:underline">
+                    Forgot?
+                  </a>
+                </div>
+                <div className="input-pill relative rounded-2xl border border-gray-200 bg-gray-50/70 hover:bg-gray-50 transition-all">
+                  <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
                   <input
                     type={showPassword ? "text" : "password"}
                     name="password"
-                    autoComplete="off"
                     placeholder="Enter your password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="font-body w-full bg-white/[0.03] border border-white/10 rounded-xl pl-10 pr-10 py-2.5 text-sm text-white placeholder-white/25 outline-none focus:border-[#8A5CF6]/60 transition-colors"
+                    className="font-body w-full bg-transparent pl-11 pr-11 py-3.5 text-sm text-gray-800 placeholder-gray-400 outline-none rounded-2xl font-medium"
+                    required
                   />
                   <button
                     type="button"
-                    onClick={() => setShowPassword((v) => !v)}
-                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-white/35 hover:text-white/70 transition-colors"
-                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
                   >
-                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
                 </div>
               </div>
 
-              {error && <div className="text-red-300 text-sm">{error}</div>}
+              {/* Error Display */}
+              {error && (
+                <div className="p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-600 text-xs font-medium flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-red-500" />
+                  {error}
+                </div>
+              )}
 
+              {/* Submit Button */}
               <button
                 type="submit"
-                className="font-body w-full py-2.5 rounded-xl bg-gradient-to-r from-[#8A5CF6] to-[#4C1D95] text-white text-sm font-medium shadow-[0_0_20px_rgba(138,43,226,0.35)] hover:shadow-[0_0_30px_rgba(138,43,226,0.55)] hover:-translate-y-[1px] active:translate-y-0 transition-all duration-200"
+                disabled={loading}
+                className="font-display w-full py-3.5 px-6 rounded-2xl bg-gray-900 hover:bg-black text-white text-sm font-bold shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-2 group active:scale-[0.99] disabled:opacity-70 mt-2"
               >
-                Sign in
+                {loading ? "Logging in..." : "Login"}
+                <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
               </button>
             </form>
 
-            <p className="font-body text-xs text-white/35 text-center mt-8">
-              Don't have an account? <Link to="/signup" className="text-[#C9A6FF] hover:text-white transition-colors">Sign up</Link>
+            {/* Switch to Signup */}
+            <p className="font-body text-xs text-gray-500 text-center mt-6">
+              Don't have an account?{" "}
+              <Link to="/signup" className="text-[#F59E0B] font-semibold hover:underline">
+                Sign up
+              </Link>
             </p>
           </div>
+
         </div>
       </div>
     </div>
