@@ -1,0 +1,23 @@
+:root {
+  /* Core Colors */
+  --bg-primary: #ffffff;      /* White background */
+  --bg-secondary: #f3f4f6;    /* Slightly off-white for cards/panels */
+  
+  --theme-yellow: #facc15;    /* Vibrant Yellow for accents/highlights */
+  --theme-green: #22c55e;     /* Bright Green for success/actions */
+  --theme-pink: #ec4899;      /* Hot Pink for primary interactive elements */
+  
+  /* Text Colors */
+  --text-main: #0D0D0F;       /* Very dark text for high contrast on white */
+  --text-muted: #4b5563;      /* Muted text for subtitles */
+  
+  /* Borders and Effects */
+  --border-light: rgba(0, 0, 0, 0.1);
+  --glow-pink: rgba(236, 72, 153, 0.5);
+  --glow-yellow: rgba(250, 204, 21, 0.5);
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-main);
+}

@@ -40,7 +40,7 @@ export default function Sidebar() {
   ];
 
   return (
-    <aside className="h-full w-64 shrink-0 bg-[#0D0D0F]/95 backdrop-blur-xl border-r border-[#8A2BE2]/20 flex flex-col">
+    <aside className="h-full w-64 shrink-0 bg-[var(--bg-primary)]/95 backdrop-blur-xl border-r border-[var(--theme-pink)]/20 shadow-md flex flex-col">
       {/* Nav items */}
       <nav className="flex-1 px-3 py-4 flex flex-col gap-1">
         {navItems.map(({ label, icon: Icon }) => {
@@ -65,22 +65,22 @@ export default function Sidebar() {
               }}
               className={`group relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ease-out ${
                 isActive
-                  ? "text-white bg-gradient-to-r from-[#8A2BE2]/30 to-[#311432]/30 border border-[#8A2BE2]/40 shadow-[0_0_12px_rgba(138,43,226,0.25)]"
-                  : "text-white/60 hover:text-white hover:bg-[#311432]/40 hover:translate-x-1"
+                  ? "text-[var(--text-main)] bg-[var(--theme-yellow)]/20 border border-[var(--theme-yellow)]/40 shadow-[0_0_12px_var(--glow-yellow)]"
+                  : "text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--theme-pink)]/10 hover:translate-x-1"
               }`}
             >
               <span
                 className={`flex items-center justify-center w-8 h-8 rounded-lg shrink-0 transition-colors ${
                   isActive
-                    ? "bg-gradient-to-br from-[#8A2BE2] to-[#311432] text-white"
-                    : "bg-[#8A2BE2]/10 text-[#B47EF0] group-hover:bg-[#8A2BE2]/20"
+                    ? "bg-[var(--theme-yellow)] text-[var(--text-main)]"
+                    : "bg-[var(--theme-pink)]/10 text-[var(--theme-pink)] group-hover:bg-[var(--theme-pink)]/20"
                 }`}
               >
                 <Icon size={16} />
               </span>
               <span className="truncate">{label}</span>
               {isActive && (
-                <span className="absolute right-2 w-1.5 h-1.5 rounded-full bg-[#B47EF0] shadow-[0_0_6px_rgba(180,126,240,0.9)]" />
+                <span className="absolute right-2 w-1.5 h-1.5 rounded-full bg-[var(--theme-pink)] shadow-[0_0_6px_var(--glow-pink)]" />
               )}
             </button>
           );
@@ -88,8 +88,8 @@ export default function Sidebar() {
       </nav>
 
       {/* Footer */}
-      <div className="px-5 py-4 border-t border-[#8A2BE2]/20">
-        <p className="text-xs text-white/40">AI Guide v1.0</p>
+      <div className="px-5 py-4 border-t border-[var(--theme-pink)]/20">
+        <p className="text-xs text-[var(--text-muted)]">AI Guide v1.0</p>
       </div>
     </aside>
   );

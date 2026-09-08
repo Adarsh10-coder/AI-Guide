@@ -1,29 +1,8 @@
 import { useState } from "react";
-import { Mail, Lock, Eye, EyeOff, Sparkles, User, ArrowRight } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, User, ArrowRight, Sparkles, ShieldCheck } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../AuthProvider";
-
-// Neural network node layout representing structural career building vectors
-const nodes = [
-  { id: "i1", x: 50, y: 90, layer: 0 },
-  { id: "i2", x: 50, y: 190, layer: 0 },
-  { id: "i3", x: 50, y: 290, layer: 0 },
-  { id: "h1a", x: 190, y: 50, layer: 1 },
-  { id: "h1b", x: 190, y: 150, layer: 1 },
-  { id: "h1c", x: 190, y: 250, layer: 1 },
-  { id: "h1d", x: 190, y: 340, layer: 1 },
-  { id: "h2a", x: 330, y: 100, layer: 2 },
-  { id: "h2b", x: 330, y: 210, layer: 2 },
-  { id: "h2c", x: 330, y: 310, layer: 2 },
-  { id: "o1", x: 460, y: 150, layer: 3 },
-  { id: "o2", x: 460, y: 260, layer: 3 },
-];
-
-const byLayer = (n) => nodes.filter((node) => node.layer === n);
-const edges = [];
-for (let l = 0; l < 3; l++) {
-  byLayer(l).forEach((a) => byLayer(l + 1).forEach((b) => edges.push({ a, b })));
-}
+import Ai3dCanvas from "../../Components/Ai3dCanvas";
 
 export default function SignUpPage() {
   const { signup } = useAuth();
@@ -32,246 +11,242 @@ export default function SignUpPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setError("");
 
-    const result = await signup(fullName.trim(), email.trim(), password);
-    if (!result.success) {
-      setError(result.message);
+    if (!fullName || !email || !password) {
+      setError("Please fill in all fields.");
       return;
     }
 
-    navigate("/login");
+    setLoading(true);
+    try {
+      const result = await signup(fullName.trim(), email.trim(), password);
+      if (!result.success) {
+        setError(result.message || "Failed to create account. Please try again.");
+      } else {
+        navigate("/login");
+      }
+    } catch (err) {
+      setError("An unexpected error occurred. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="min-h-screen w-full bg-[#08070C] flex relative overflow-hidden">
+    <div className="min-h-screen w-full bg-[var(--bg-secondary)] flex items-center justify-center p-4 sm:p-6 md:p-10 font-body relative overflow-hidden">
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght=500;600;700&family=Inter:wght=400;500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=Space+Grotesk:wght@600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap');
 
-        .font-display { font-family: 'Space Grotesk', sans-serif; }
+        .font-headline { font-family: 'Syne', 'Space Grotesk', sans-serif; }
+        .font-display { font-family: 'Plus Jakarta Sans', sans-serif; }
         .font-body { font-family: 'Inter', sans-serif; }
 
-        @keyframes pulseDot {
-          0%, 100% { opacity: 0.4; }
-          50% { opacity: 1; }
+        @keyframes titleFloat {
+          0%, 100% { transform: translateY(0px) scale(1); }
+          50% { transform: translateY(-5px) scale(1.01); }
         }
-        @keyframes flowLine {
-          0% { stroke-dashoffset: 24; }
-          100% { stroke-dashoffset: 0; }
+        @keyframes floatBlur1 {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          50% { transform: translate(12px, -12px) scale(1.06); }
         }
-        @keyframes rotateAura {
-          to { transform: rotate(360deg); }
+        @keyframes floatBlur2 {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          50% { transform: translate(-10px, 10px) scale(0.95); }
         }
-        @keyframes driftGlow {
-          0%, 100% { transform: translate(0, 0); }
-          50% { transform: translate(20px, -15px); }
-        }
-        @keyframes floatChip {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-6px); }
-        }
-        .nn-node { animation: pulseDot 3.2s ease-in-out infinite; }
-        .nn-edge { stroke-dasharray: 6 6; animation: flowLine 1.6s linear infinite; }
-        .aura-spin { animation: rotateAura 7s linear infinite; }
-        .drift-1 { animation: driftGlow 9s ease-in-out infinite; }
-        .drift-2 { animation: driftGlow 11s ease-in-out infinite reverse; }
-        .float-chip { animation: floatChip 4s ease-in-out infinite; }
-
-        @media (prefers-reduced-motion: reduce) {
-          .nn-node, .nn-edge, .aura-spin, .drift-1, .drift-2, .float-chip { animation: none; }
+        @keyframes softBlobFloat {
+          0%, 100% { transform: translateY(0px) rotate(-12deg); }
+          50% { transform: translateY(-8px) rotate(-8deg); }
         }
 
-        .input-glow:focus-within {
-          box-shadow: 0 0 0 3px rgba(154, 92, 246, 0.22), 0 0 20px rgba(154, 92, 246, 0.15);
+        .animate-title-float { animation: titleFloat 4s ease-in-out infinite; }
+        .animate-float-blur-1 { animation: floatBlur1 8s ease-in-out infinite; }
+        .animate-float-blur-2 { animation: floatBlur2 10s ease-in-out infinite; }
+        .animate-soft-blob { animation: softBlobFloat 5s ease-in-out infinite; }
+
+        .input-pill {
+          transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .input-pill:focus-within {
+          border-color: var(--theme-yellow);
+          box-shadow: 0 0 0 4px var(--glow-yellow);
         }
       `}</style>
 
-      {/* ambient background texture */}
-      <div
-        className="pointer-events-none absolute inset-0"
-        style={{
-          backgroundImage:
-            "radial-gradient(rgba(255,255,255,0.035) 1px, transparent 1px)",
-          backgroundSize: "28px 28px",
-        }}
-      />
-      <div className="drift-1 pointer-events-none absolute -top-32 -left-20 w-[420px] h-[420px] rounded-full bg-[#8A5CF6]/20 blur-[110px]" />
-      <div className="drift-2 pointer-events-none absolute bottom-[-140px] right-[-80px] w-[380px] h-[380px] rounded-full bg-[#5B2A9E]/25 blur-[110px]" />
-
-      {/* Left: AI neural network illustration - Mapped to Career Predictive Graph */}
-      <div className="hidden md:flex w-1/2 items-center justify-center p-10 relative z-10">
-        <div className="relative w-full max-w-md">
-          <div className="float-chip inline-flex items-center gap-2 mb-6 px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/10 backdrop-blur-sm">
-            <Sparkles size={13} className="text-[#C9A6FF]" />
-            <span className="font-body text-[11px] tracking-wide text-white/60">
-              Predictive Career Engine
-            </span>
+      {/* Main Container Card matching Login Page */}
+      <div className="w-full max-w-5xl bg-white rounded-[30px] md:rounded-[44px] shadow-[0_25px_75px_rgba(0,0,0,0.08)] border border-white/90 p-3 md:p-5 relative z-10 flex flex-col md:flex-row min-h-[460px]">
+        
+        {/* ================= LEFT SECTION (Yellow Organic Curved Card with Ai3dCanvas & Robot1) ================= */}
+        <div className="w-full md:w-[48%] bg-gradient-to-br from-[var(--theme-yellow)] to-[var(--theme-pink)] rounded-tl-[32px] rounded-bl-[32px] md:rounded-tl-[38px] md:rounded-bl-[38px] md:rounded-tr-[90px] md:rounded-br-[140px] p-6 md:p-8 relative overflow-hidden flex flex-col justify-between min-h-[300px] md:min-h-[420px] shadow-inner">
+          
+          {/* Depth-of-field soft blurred background shapes */}
+          <div className="animate-float-blur-1 absolute -top-4 left-1/3 w-28 h-28 rounded-full bg-[var(--theme-pink)]/40 blur-xl pointer-events-none z-0" />
+          <div className="animate-float-blur-2 absolute top-1/3 left-1/4 w-36 h-36 rounded-full bg-[var(--theme-yellow)]/50 blur-2xl pointer-events-none z-0" />
+          
+          {/* Bottom left glossy blob */}
+          <div className="animate-soft-blob absolute bottom-10 left-8 w-24 h-11 rounded-[30px] bg-[var(--bg-primary)]/95 backdrop-blur-md shadow-[0_10px_25px_rgba(0,0,0,0.06)] border border-[var(--bg-primary)]/80 pointer-events-none z-20 flex items-center justify-center">
+            <span className="w-3 h-3 rounded-full bg-[var(--theme-yellow)]/80" />
           </div>
 
-          <svg
-            viewBox="0 0 520 400"
-            className="w-full h-auto"
-            style={{ filter: "drop-shadow(0 0 28px rgba(138,43,226,0.22))" }}
-          >
-            <defs>
-              <linearGradient id="edgeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#8A5CF6" stopOpacity="0.12" />
-                <stop offset="100%" stopColor="#C9A6FF" stopOpacity="0.5" />
-              </linearGradient>
-              <radialGradient id="nodeGrad" cx="35%" cy="30%" r="70%">
-                <stop offset="0%" stopColor="#F1E7FE" />
-                <stop offset="55%" stopColor="#B47EF0" />
-                <stop offset="100%" stopColor="#6A1FB0" />
-              </radialGradient>
-            </defs>
+          {/* Top Left Icon */}
+          <div className="relative z-20 flex items-center justify-between">
+            <div className="w-9 h-9 rounded-xl bg-black/10 backdrop-blur-md border border-black/10 flex items-center justify-center text-gray-900 shadow-sm">
+              <Sparkles size={18} className="text-gray-900" />
+            </div>
+          </div>
 
-            {edges.map(({ a, b }, i) => (
-              <line
-                key={i}
-                className="nn-edge"
-                x1={a.x} y1={a.y} x2={b.x} y2={b.y}
-                stroke="url(#edgeGrad)"
-                strokeWidth="1"
-                style={{ animationDelay: `${(i % 12) * 0.12}s` }}
-              />
-            ))}
-
-            {nodes.map((n, i) => (
-              <circle
-                key={n.id}
-                className="nn-node"
-                cx={n.x} cy={n.y}
-                r={n.layer === 0 || n.layer === 3 ? 6 : 5}
-                fill="url(#nodeGrad)"
-                style={{ animationDelay: `${(i % 8) * 0.35}s` }}
-              />
-            ))}
-          </svg>
-
-          <div className="mt-6">
-            <p className="font-display text-xl font-medium bg-gradient-to-r from-white to-[#C9A6FF] bg-clip-text text-transparent">
-              Bridge Your Skills Gap
+          {/* Large Bold Typography */}
+          <div className="relative z-20 mt-3 md:mt-5 select-none">
+            <h1 className="animate-title-float font-headline text-5xl sm:text-6xl md:text-7xl font-extrabold text-[#0F172A] leading-[1.03] tracking-tight drop-shadow-sm">
+              AI <br /> Guide
+            </h1>
+            <p className="font-body text-[#1E293B] text-xs sm:text-sm font-semibold mt-3.5 max-w-xs leading-relaxed">
+              Experience the next-gen intelligent career workspace powered by neural models.
             </p>
-            <p className="font-body text-[13px] text-white/35 mt-2 max-w-xs leading-relaxed">
-              Create your intelligence profile to evaluate target roles, receive daily upskilling suggestions, and construct cross-industry career maps.
-            </p>
+          </div>
+
+          {/* Center Interactive 3D AI Canvas (Rendering transparent robot1.png with 3D floating shapes) */}
+          <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-auto">
+            <div className="w-full h-full max-w-md max-h-md">
+              <Ai3dCanvas />
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Right: sign up / initialization form */}
-      <div className="w-full md:w-1/2 flex items-center justify-center px-6 py-12 relative z-10 overflow-y-auto">
-        <div className="w-full max-w-md relative rounded-[28px] p-[1.5px] overflow-hidden my-auto">
-          {/* rotating aura border */}
-          <div
-            className="aura-spin absolute -inset-[60%]"
-            style={{
-              background:
-                "conic-gradient(from 0deg, transparent 0%, #8A5CF6 12%, transparent 28%, transparent 60%, #C9A6FF 72%, transparent 88%)",
-            }}
-          />
+        {/* ================= RIGHT SECTION (Signup Form) ================= */}
+        <div className="w-full md:w-[52%] p-6 sm:p-8 md:p-12 flex flex-col justify-between relative bg-white rounded-[32px] md:rounded-[44px]">
+          
+          {/* Top Bar: Green Badge + Emoji Avatar */}
+          <div className="flex items-center justify-between mb-4">
+            <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200/80 text-emerald-700 shadow-xs">
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+              </span>
+              <span className="font-display text-[11px] font-bold tracking-wider uppercase flex items-center gap-1.5">
+                <ShieldCheck size={14} className="text-emerald-600" />
+                AUTHENTICATION
+              </span>
+            </div>
 
-          <div className="relative z-10 rounded-[26px] bg-[#0D0C13]/95 backdrop-blur-xl px-8 py-8 border border-white/[0.06]">
-            <div className="text-center mb-6">
-              <h2 className="font-display inline-block text-[26px] font-semibold tracking-wide bg-gradient-to-r from-white to-[#C9A6FF] bg-clip-text text-transparent">
-                Begin Career Mapping
+            <div className="w-10 h-10 rounded-full bg-[var(--theme-yellow)] flex items-center justify-center shadow-md hover:scale-105 transition-transform duration-200 cursor-pointer">
+              <span className="text-xl select-none">😃</span>
+            </div>
+          </div>
+
+          {/* Form Area */}
+          <div className="w-full max-w-md mx-auto my-auto">
+            
+            {/* Header (Exact same font style as Login page's Welcome back header) */}
+            <div className="text-center mb-8 relative">
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-12 bg-[var(--theme-yellow)]/10 blur-xl rounded-full pointer-events-none" />
+              
+              <h2 className="font-headline text-4xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-gray-900 via-gray-800 to-[var(--theme-yellow)] tracking-tight mb-2 leading-tight">
+                Create account
               </h2>
-              <p className="font-body text-[12.5px] text-white/35 mt-1">
-                Initialize your professional profile to generate optimized pathways
+              <p className="font-body text-xs sm:text-sm font-semibold text-gray-500 flex items-center justify-center gap-1.5">
+                <span>Please enter your details to create an account</span>
               </p>
             </div>
 
-            <form className="space-y-3.5" onSubmit={handleSubmit} autoComplete="off">
-              <input type="text" name="fakeusernameremembered" autoComplete="username" value="" style={{ display: 'none' }} readOnly tabIndex={-1} />
-              <input type="password" name="fakepasswordremembered" autoComplete="new-password" value="" style={{ display: 'none' }} readOnly tabIndex={-1} />
+            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5" autoComplete="off">
+              {/* Full Name Input */}
               <div>
-                <label className="font-body block text-[10.5px] font-medium text-white/50 mb-1 tracking-wide uppercase">
+                <label className="font-body block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wider">
                   Full Name
                 </label>
-                <div className="input-glow relative rounded-xl transition-shadow">
-                  <User size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#B47EF0]" />
+                <div className="input-pill relative rounded-2xl border border-gray-200 bg-gray-50/70 hover:bg-gray-50 transition-all">
+                  <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
                   <input
                     type="text"
                     name="fullName"
-                    autoComplete="off"
-                    placeholder="Alex Morgan"
+                    placeholder="John Doe"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
-                    className="font-body w-full bg-white/[0.03] border border-white/10 rounded-xl pl-10 pr-3 py-2 text-sm text-white placeholder-white/25 outline-none focus:border-[#8A5CF6]/60 transition-colors"
+                    className="font-body w-full bg-transparent pl-11 pr-4 py-3.5 text-sm text-gray-800 placeholder-gray-400 outline-none rounded-2xl font-medium"
+                    required
                   />
                 </div>
               </div>
 
+              {/* Email Input */}
               <div>
-                <label className="font-body block text-[10.5px] font-medium text-white/50 mb-1 tracking-wide uppercase">
-                  Professional Email
+                <label className="font-body block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wider">
+                  Email Address
                 </label>
-                <div className="input-glow relative rounded-xl transition-shadow">
-                  <Mail size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#B47EF0]" />
+                <div className="input-pill relative rounded-2xl border border-gray-200 bg-gray-50/70 hover:bg-gray-50 transition-all">
+                  <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
                   <input
                     type="email"
                     name="email"
-                    autoComplete="off"
-                    placeholder="name@domain.com"
+                    placeholder="you@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="font-body w-full bg-white/[0.03] border border-white/10 rounded-xl pl-10 pr-3 py-2 text-sm text-white placeholder-white/25 outline-none focus:border-[#8A5CF6]/60 transition-colors"
+                    className="font-body w-full bg-transparent pl-11 pr-4 py-3.5 text-sm text-gray-800 placeholder-gray-400 outline-none rounded-2xl font-medium"
+                    required
                   />
                 </div>
               </div>
 
+              {/* Password Input */}
               <div>
-                <label className="font-body block text-[10.5px] font-medium text-white/50 mb-1 tracking-wide uppercase">
-                  Secure Password
+                <label className="font-body block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wider">
+                  Password
                 </label>
-                <div className="input-glow relative rounded-xl transition-shadow">
-                  <Lock size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#B47EF0]" />
+                <div className="input-pill relative rounded-2xl border border-gray-200 bg-gray-50/70 hover:bg-gray-50 transition-all">
+                  <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
                   <input
                     type={showPassword ? "text" : "password"}
                     name="password"
-                    autoComplete="off"
-                    placeholder="Create password"
+                    placeholder="Enter your password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="font-body w-full bg-white/[0.03] border border-white/10 rounded-xl pl-10 pr-10 py-2 text-sm text-white placeholder-white/25 outline-none focus:border-[#8A5CF6]/60 transition-colors"
+                    className="font-body w-full bg-transparent pl-11 pr-11 py-3.5 text-sm text-gray-800 placeholder-gray-400 outline-none rounded-2xl font-medium"
+                    required
                   />
                   <button
                     type="button"
-                    onClick={() => setShowPassword((v) => !v)}
-                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-white/35 hover:text-white/70 transition-colors"
-                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
                   >
-                    {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
                 </div>
               </div>
 
-              {error && <div className="text-red-300 text-sm">{error}</div>}
+              {/* Error Display */}
+              {error && (
+                <div className="p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-600 text-xs font-medium flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-red-500" />
+                  {error}
+                </div>
+              )}
 
-              <div className="font-body flex items-start gap-2 text-[11px] pt-1 leading-relaxed text-white/45">
-                <input type="checkbox" className="mt-0.5 rounded border-[#8A5CF6]/40 bg-white/[0.03] accent-[#8A5CF6]" required />
-                <span>
-                  I authorize the neural system to compile public marketplace trends to calculate my path options.
-                </span>
-              </div>
-
+              {/* Submit Button */}
               <button
                 type="submit"
-                className="font-body w-full mt-2 py-2.5 rounded-xl bg-gradient-to-r from-[#8A5CF6] to-[#4C1D95] text-white text-sm font-medium shadow-[0_0_20px_rgba(138,43,226,0.35)] hover:shadow-[0_0_30px_rgba(138,43,226,0.55)] hover:-translate-y-[1px] active:translate-y-0 transition-all duration-200 flex items-center justify-center gap-2"
+                disabled={loading}
+                className="font-display w-full py-3.5 px-6 rounded-2xl bg-gray-900 hover:bg-black text-white text-sm font-bold shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-2 group active:scale-[0.99] disabled:opacity-70 mt-2"
               >
-                Create Profile
-                <ArrowRight size={14} />
+                {loading ? "Creating..." : "Create Account"}
+                <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
               </button>
             </form>
 
-            <p className="font-body text-xs text-white/35 text-center mt-6">
-              Already building with us? <Link to="/login" className="text-[#C9A6FF] hover:text-white transition-colors">Login</Link>
+            {/* Switch to Login */}
+            <p className="font-body text-xs text-gray-500 text-center mt-6">
+              Already have an account?{" "}
+              <Link to="/login" className="text-[var(--theme-yellow)] font-semibold hover:underline">
+                Login
+              </Link>
             </p>
           </div>
+
         </div>
       </div>
     </div>

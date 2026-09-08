@@ -7,11 +7,10 @@ import {
   Sparkles,
   ArrowRight,
   ShieldCheck,
-  Activity,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../AuthProvider";
-import Login3D from "../../Components/Ai3dCanvas";
+import Ai3dCanvas from "../../Components/Ai3dCanvas";
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -47,7 +46,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-[#EBF0F5] flex items-center justify-center p-4 sm:p-6 md:p-10 font-body relative overflow-hidden">
+    <div className="min-h-screen w-full bg-[var(--bg-secondary)] flex items-center justify-center p-4 sm:p-6 md:p-10 font-body relative overflow-hidden">
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=Space+Grotesk:wght@600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap');
 
@@ -57,68 +56,80 @@ export default function LoginPage() {
 
         @keyframes titleFloat {
           0%, 100% { transform: translateY(0px) scale(1); }
-          50% { transform: translateY(-6px) scale(1.015); }
+          50% { transform: translateY(-5px) scale(1.01); }
         }
         @keyframes floatBlur1 {
           0%, 100% { transform: translate(0, 0) scale(1); }
-          50% { transform: translate(15px, -15px) scale(1.08); }
+          50% { transform: translate(12px, -12px) scale(1.06); }
         }
         @keyframes floatBlur2 {
           0%, 100% { transform: translate(0, 0) scale(1); }
-          50% { transform: translate(-12px, 12px) scale(0.95); }
+          50% { transform: translate(-10px, 10px) scale(0.95); }
+        }
+        @keyframes softBlobFloat {
+          0%, 100% { transform: translateY(0px) rotate(-12deg); }
+          50% { transform: translateY(-8px) rotate(-8deg); }
         }
 
         .animate-title-float { animation: titleFloat 4s ease-in-out infinite; }
         .animate-float-blur-1 { animation: floatBlur1 8s ease-in-out infinite; }
         .animate-float-blur-2 { animation: floatBlur2 10s ease-in-out infinite; }
+        .animate-soft-blob { animation: softBlobFloat 5s ease-in-out infinite; }
 
         .input-pill {
           transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .input-pill:focus-within {
-          border-color: #F59E0B;
-          box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.12);
+          border-color: var(--theme-yellow);
+          box-shadow: 0 0 0 4px var(--glow-yellow);
         }
       `}</style>
 
-      {/* Main Container Card */}
-      <div className="w-full max-w-6xl bg-white rounded-[32px] md:rounded-[40px] shadow-[0_20px_70px_rgba(0,0,0,0.07)] border border-white/80 p-3 md:p-5 relative z-10 flex flex-col md:flex-row min-h-[640px]">
+      {/* Main Container Card (Dashboard style matching reference photo frame) */}
+      <div className="w-full max-w-4xl bg-white rounded-[36px] md:rounded-[44px] shadow-[0_25px_75px_rgba(0,0,0,0.08)] border border-white/90 p-3 md:p-5 relative z-10 flex flex-col md:flex-row min-h-[500px]">
 
-        {/* ================= LEFT SECTION (Yellow card with 3D AI Components) ================= */}
-        <div className="w-full md:w-[48%] bg-gradient-to-br from-[#FFD95A] via-[#FFC107] to-[#F59E0B] rounded-[28px] md:rounded-[34px] p-8 md:p-10 relative overflow-hidden flex flex-col justify-between min-h-[380px] md:min-h-[580px] shadow-inner">
+        {/* ================= LEFT SECTION (Yellow Organic Curved Card Matching Pic) ================= */}
+        <div className="w-full md:w-[48%] bg-gradient-to-br from-[var(--theme-yellow)] to-[var(--theme-pink)] rounded-tl-[32px] rounded-bl-[32px] md:rounded-tl-[38px] md:rounded-bl-[38px] md:rounded-tr-[90px] md:rounded-br-[140px] p-6 md:p-8 relative overflow-hidden flex flex-col justify-between min-h-[300px] md:min-h-[460px] shadow-inner">
 
-          {/* Depth-of-field soft blurred 3D background shapes */}
-          <div className="animate-float-blur-1 absolute top-8 left-8 w-24 h-24 rounded-full bg-white/40 blur-xl pointer-events-none" />
-          <div className="animate-float-blur-2 absolute bottom-12 left-10 w-32 h-16 rounded-full bg-[#FFE699]/60 blur-xl pointer-events-none" />
-          <div className="animate-float-blur-1 absolute top-1/2 right-4 w-28 h-28 rounded-full bg-[#FF9800]/30 blur-2xl pointer-events-none" />
+          {/* Depth-of-field soft blurred 3D background shapes matching reference photo */}
+          {/* Top pinkish soft depth sphere */}
+          <div className="animate-float-blur-1 absolute -top-4 left-1/3 w-28 h-28 rounded-full bg-[var(--theme-pink)]/40 blur-xl pointer-events-none z-0" />
 
-          {/* Top Left Mini Sparkle Icon */}
+          {/* Center golden soft depth glow sphere */}
+          <div className="animate-float-blur-2 absolute top-1/3 left-1/4 w-36 h-36 rounded-full bg-[var(--theme-yellow)]/50 blur-2xl pointer-events-none z-0" />
+
+          {/* Bottom left glossy 3D white blob shape matching pic */}
+          <div className="animate-soft-blob absolute bottom-10 left-8 w-24 h-11 rounded-[30px] bg-[var(--bg-primary)]/95 backdrop-blur-md shadow-[0_10px_25px_rgba(0,0,0,0.06)] border border-[var(--bg-primary)]/80 pointer-events-none z-20 flex items-center justify-center">
+            <span className="w-3 h-3 rounded-full bg-[var(--theme-yellow)]/80" />
+          </div>
+
+          {/* Top Left Mini Icon */}
           <div className="relative z-20 flex items-center justify-between">
             <div className="w-9 h-9 rounded-xl bg-black/10 backdrop-blur-md border border-black/10 flex items-center justify-center text-gray-900 shadow-sm">
               <Sparkles size={18} className="text-gray-900" />
             </div>
           </div>
 
-          {/* Animated AI Guide Typography & Paragraph */}
-          <div className="relative z-20 mt-2 md:mt-4">
-            <h1 className="animate-title-float font-headline text-5xl sm:text-6xl md:text-7xl font-extrabold text-[#0F172A] leading-[1.02] tracking-tight drop-shadow-sm select-none">
+          {/* Large Bold Typography */}
+          <div className="relative z-20 mt-3 md:mt-5 select-none">
+            <h1 className="animate-title-float font-headline text-5xl sm:text-6xl md:text-7xl font-extrabold text-[#0F172A] leading-[1.03] tracking-tight drop-shadow-sm">
               AI <br /> Guide
             </h1>
-            <p className="font-body text-[#1E293B] text-xs sm:text-sm font-semibold mt-3 max-w-xs leading-relaxed">
+            <p className="font-body text-[#1E293B] text-xs sm:text-sm font-semibold mt-3.5 max-w-xs leading-relaxed">
               Experience the next-gen intelligent career workspace powered by neural models.
             </p>
           </div>
 
-          {/* Center Interactive 3D AI Component Canvas */}
+          {/* Center Interactive 3D AI Component Canvas (Orbiting Clockwise Right Over Yellow Card) */}
           <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-auto">
             <div className="w-full h-full max-w-md max-h-md">
-              <Login3D />
+              <Ai3dCanvas />
             </div>
           </div>
         </div>
 
         {/* ================= RIGHT SECTION (Login Form) ================= */}
-        <div className="w-full md:w-[52%] p-6 sm:p-8 md:p-12 flex flex-col justify-between relative bg-white rounded-[32px] md:rounded-[40px]">
+        <div className="w-full md:w-[52%] p-6 sm:p-8 md:p-12 flex flex-col justify-between relative bg-white rounded-[32px] md:rounded-[44px]">
 
           {/* Top Bar: Green "AUTHENTICATION LIVE SERVER" Badge + Right Emoji Badge */}
           <div className="flex items-center justify-between mb-4">
@@ -134,8 +145,8 @@ export default function LoginPage() {
               </span>
             </div>
 
-            {/* Top Right Emoji Face Avatar Badge */}
-            <div className="w-10 h-10 rounded-full bg-[#FFC93C] flex items-center justify-center shadow-md hover:scale-105 transition-transform duration-200 cursor-pointer">
+            {/* Top Right Emoji Face Avatar Badge (Matching reference photo badge) */}
+            <div className="w-10 h-10 rounded-full bg-[var(--theme-yellow)] flex items-center justify-center shadow-md hover:scale-105 transition-transform duration-200 cursor-pointer">
               <span className="text-xl select-none">😃</span>
             </div>
           </div>
@@ -145,10 +156,9 @@ export default function LoginPage() {
 
             {/* Attractive Welcome Back Header right above email */}
             <div className="text-center mb-8 relative">
-              {/* Subtle ambient glow behind text */}
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-12 bg-amber-400/10 blur-xl rounded-full pointer-events-none" />
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-12 bg-[var(--theme-yellow)]/10 blur-xl rounded-full pointer-events-none" />
 
-              <h2 className="font-headline text-4xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-gray-900 via-gray-800 to-[#F59E0B] tracking-tight mb-2 leading-tight">
+              <h2 className="font-headline text-4xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-gray-900 via-gray-800 to-[var(--theme-yellow)] tracking-tight mb-2 leading-tight">
                 Welcome back
               </h2>
               <p className="font-body text-xs sm:text-sm font-semibold text-gray-500 flex items-center justify-center gap-1.5">
@@ -186,7 +196,7 @@ export default function LoginPage() {
                   <label className="font-body block text-xs font-semibold text-gray-600 uppercase tracking-wider">
                     Password
                   </label>
-                  <a href="#" className="font-body text-xs text-[#F59E0B] font-semibold hover:underline">
+                  <a href="#" className="font-body text-xs text-[var(--theme-yellow)] font-semibold hover:underline">
                     Forgot?
                   </a>
                 </div>
@@ -233,7 +243,7 @@ export default function LoginPage() {
             {/* Switch to Signup */}
             <p className="font-body text-xs text-gray-500 text-center mt-6">
               Don't have an account?{" "}
-              <Link to="/signup" className="text-[#F59E0B] font-semibold hover:underline">
+              <Link to="/signup" className="text-[var(--theme-yellow)] font-semibold hover:underline">
                 Sign up
               </Link>
             </p>

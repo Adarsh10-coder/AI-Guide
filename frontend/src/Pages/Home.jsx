@@ -13,6 +13,7 @@ import {
   MessageCircle,
   FileEdit,
 } from "lucide-react";
+import LargeHeader from "../Components/LargeHeader";
 
 import * as THREE from "three";
 
@@ -28,106 +29,6 @@ import * as THREE from "three";
    body:      "Inter"          — paragraph + labels
 ------------------------------------------------------------------ */
 
-function Header() {
-  const [active, setActive] = useState("Home");
-  const [menuOpen, setMenuOpen] = useState(false);
-  const navigate = useNavigate();
-  const { user, logout } = useAuth();
-
-  const navItems = ["Home", "Features", "About"];
-
-  return (
-    <header className="w-full sticky top-0 z-20 bg-[#0D0D0F]/80 backdrop-blur-xl border-b border-[#8A2BE2]/20 shadow-[0_1px_20px_rgba(0,0,0,0.3)]">
-      <div className="max-w-6xl mx-auto px-2 sm:px-3 h-20 flex items-center justify-start gap-4">
-          <div className="flex items-center gap-3 shrink-0 ml-[-13.5rem]">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#8A2BE2] to-[#311432] flex items-center justify-center shadow-md shadow-[#8A2BE2]/40">
-            <BrainCircuit size={20} className="text-white" strokeWidth={2} />
-          </div>
-          <span className="text-2xl font-semibold text-white whitespace-nowrap">
-            AI Guide
-          </span>
-        </div>
-
-        <nav className="flex-1 flex items-center gap-6 sm:gap-10 justify-center">
-          {navItems.map((item) => (
-            <button
-              key={item}
-              onClick={() => {
-                setActive(item);
-                if (item === "Features") navigate("/resume-analysis");
-                else if (item === "Home") navigate("/home");
-              }}
-              className={`text-base font-medium whitespace-nowrap transition-all duration-200 ease-out transform hover:scale-110 hover:-translate-y-0.5 origin-center ${
-                active === item
-                  ? "text-[#B47EF0] drop-shadow-[0_0_8px_rgba(138,43,226,0.7)]"
-                  : "text-white/60 hover:text-[#B47EF0] hover:drop-shadow-[0_0_8px_rgba(138,43,226,0.7)]"
-              }`}
-            >
-              {item}
-            </button>
-          ))}
-        </nav>
-
-          <div className="relative shrink-0 flex justify-end ml-auto mr-[-18.5rem] sm:mr-[-10.5rem]">
-          <button
-            onClick={() => setMenuOpen((v) => !v)}
-            aria-label="Account menu"
-            className="relative flex items-center w-20 h-10 rounded-full bg-[#311432]/60 hover:bg-[#311432]/80 border border-[#8A2BE2]/30 transition-colors px-2"
-          >
-            <div
-              className={`w-9 h-9 rounded-full bg-gradient-to-br from-[#8A2BE2] to-[#311432] flex items-center justify-center transition-transform duration-300 ease-out transform ${
-                menuOpen ? "translate-x-8" : "translate-x-0"
-              }`}
-            >
-              <User size={16} className="text-white" />
-            </div>
-          </button>
-
-          <div
-            className={`absolute right-0 top-14 w-52 rounded-2xl z-10 transition-all duration-300 ease-out origin-top-right p-[1px] bg-gradient-to-br from-[#8A2BE2]/60 to-[#311432]/60 shadow-xl shadow-black/40 ${
-              menuOpen
-                ? "opacity-100 translate-x-0 scale-100 pointer-events-auto"
-                : "opacity-0 translate-x-6 scale-95 pointer-events-none"
-            }`}
-          >
-            <div className="rounded-2xl bg-[#0D0D0F]/95 backdrop-blur-xl overflow-hidden">
-              <div className="flex items-center gap-3 px-4 py-3 border-b border-white/10">
-                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#8A2BE2] to-[#311432] flex items-center justify-center shrink-0">
-                  <User size={16} className="text-white" />
-                </div>
-                <div className="min-w-0">
-                  <p className="text-sm font-medium text-white truncate">{user?.name || 'Guest user'}</p>
-                  <p className="text-xs text-white/50 truncate">{user?.email || 'guest@aiguide.com'}</p>
-                </div>
-              </div>
-              <div className="p-1.5">
-                <button className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm text-white/90 hover:bg-white/10 hover:text-[#B47EF0] transition-colors group">
-                  <span className="flex items-center justify-center w-7 h-7 rounded-lg bg-[#8A2BE2]/15 text-[#B47EF0] transition-colors">
-                    <Settings size={14} />
-                  </span>
-                  Profile
-                </button>
-                <button
-                  onClick={async () => {
-                    setMenuOpen(false);
-                    await logout();
-                    navigate('/login');
-                  }}
-                  className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm text-white/90 hover:bg-white/10 hover:text-[#B47EF0] transition-colors group"
-                >
-                  <span className="flex items-center justify-center w-7 h-7 rounded-lg bg-[#8A2BE2]/15 text-[#B47EF0] transition-colors">
-                    <LogOut size={14} />
-                  </span>
-                  Logout
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </header>
-  );
-}
 
 /* ----------------------------------------------------------------
    3D Robot — head yaws/pitches toward the cursor anywhere on screen.
@@ -175,7 +76,7 @@ export default function Home() {
   ];
 
   return (
-    <div className="min-h-screen w-full bg-[#0D0D0F] text-[#F3F0F7]">
+    <div className="min-h-screen w-full bg-[var(--bg-primary)] text-[var(--text-main)]">
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
         .font-display { font-family: 'Space Grotesk', sans-serif; }
@@ -194,17 +95,17 @@ export default function Home() {
         }
       `}</style>
 
-      <Header />
+      <LargeHeader />
 
       <main className="font-body relative overflow-hidden">
         {/* ambient background glow */}
-        <div className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 w-[900px] h-[900px] rounded-full bg-[#8A2BE2]/10 blur-[160px]" />
+        <div className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 w-[900px] h-[900px] rounded-full bg-[var(--theme-yellow)]/10 blur-[160px]" />
 
         <div className="max-w-6xl mx-auto px-6 sm:px-8 pt-16 pb-24 relative grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
           {/* Left: copy */}
           <div className="justify-self-start transform -translate-x-4 sm:-translate-x-30">
             <span
-              className="reveal inline-block font-body text-xs tracking-[0.2em] uppercase text-[#B47EF0]/90 border border-[#8A2BE2]/30 rounded-full px-3 py-1 bg-[#8A2BE2]/10"
+              className="reveal inline-block font-body text-xs tracking-[0.2em] uppercase text-[var(--theme-pink)] border border-[var(--theme-pink)]/30 rounded-full px-3 py-1 bg-[var(--theme-pink)]/10"
               style={{ animationDelay: "0ms" }}
             >
               Not a chatbot. A career co-pilot.
@@ -215,7 +116,7 @@ export default function Home() {
                 One AI guide.
               </span>
               <span
-                className="reveal block text-[#B47EF0]"
+                className="reveal block text-[var(--theme-green)]"
                 style={{ animationDelay: "220ms" }}
               >
                 Every step to the job.
@@ -223,7 +124,7 @@ export default function Home() {
             </h1>
 
             <p
-              className="reveal text-white/60 text-base sm:text-lg leading-relaxed mt-6 max-w-md"
+              className="reveal text-[var(--text-muted)] text-base sm:text-lg leading-relaxed mt-6 max-w-md"
               style={{ animationDelay: "360ms" }}
             >
               Prep, resume, mock rounds, and job alerts — reading off the same
@@ -234,7 +135,7 @@ export default function Home() {
               className="reveal flex flex-wrap items-center gap-3 mt-8"
               style={{ animationDelay: "480ms" }}
             >
-              <button onClick={() => navigate('/resume-analysis')} className="px-5 py-2.5 rounded-xl bg-gradient-to-br from-[#8A2BE2] to-[#B47EF0] text-white text-sm font-medium shadow-lg shadow-[#8A2BE2]/30 hover:shadow-[#8A2BE2]/50 transition-shadow">
+              <button onClick={() => navigate('/resume-analysis')} className="px-5 py-2.5 rounded-xl bg-[var(--theme-pink)] text-white text-sm font-medium shadow-lg shadow-[var(--glow-pink)] hover:shadow-[var(--theme-pink)]/80 transition-shadow">
                   Lets's Start
                 </button>
             </div>
@@ -247,14 +148,14 @@ export default function Home() {
               {signals.map(({ icon: Icon, label, copy }) => (
                 <div
                   key={label}
-                  className="flex items-start gap-3 pl-3.5 border-l-2 border-[#8A2BE2]/30"
+                  className="flex items-start gap-3 pl-3.5 border-l-2 border-[var(--theme-yellow)]/50"
                 >
-                  <span className="mt-0.5 flex items-center justify-center w-7 h-7 rounded-lg bg-[#8A2BE2]/15 text-[#B47EF0] shrink-0">
+                  <span className="mt-0.5 flex items-center justify-center w-7 h-7 rounded-lg bg-[var(--theme-yellow)]/20 text-[var(--theme-yellow)] shrink-0">
                     <Icon size={14} />
                   </span>
                   <div>
-                    <p className="text-sm font-semibold text-white">{label}</p>
-                    <p className="text-xs text-white/50 leading-snug mt-0.5">{copy}</p>
+                    <p className="text-sm font-semibold text-[var(--text-main)]">{label}</p>
+                    <p className="text-xs text-[var(--text-muted)] leading-snug mt-0.5">{copy}</p>
                   </div>
                 </div>
               ))}
@@ -263,11 +164,11 @@ export default function Home() {
 
           {/* Right: 3D robot that watches the cursor */}
           <div className="relative h-[420px] sm:h-[520px] w-full justify-self-end transform translate-x-10 sm:translate-x-37">
-            <div className="absolute inset-0 rounded-3xl bg-gradient-to-b from-[#311432]/40 to-transparent" />
-            <Suspense fallback={<div className="w-full h-full grid place-items-center">Loading preview...</div>}>
+            <div className="absolute inset-0 rounded-3xl bg-gradient-to-b from-[var(--theme-yellow)]/10 to-transparent" />
+            <Suspense fallback={<div className="w-full h-full grid place-items-center text-[var(--text-muted)]">Loading preview...</div>}>
               <RobotCanvas />
             </Suspense>
-            <p className="absolute bottom-3 left-1/2 -translate-x-1/2 text-[11px] tracking-wide text-white/30 font-body">
+            <p className="absolute bottom-3 left-1/2 -translate-x-1/2 text-[11px] tracking-wide text-[var(--text-muted)] font-body">
               always watching your next move
             </p>
           </div>
