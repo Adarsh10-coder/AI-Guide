@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../AuthProvider";
-import Ai3dCanvas from "../../Components/Ai3dCanvas";
+import loginPic from "../../assets/login.png";
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -86,50 +86,15 @@ export default function LoginPage() {
       `}</style>
 
       {/* Main Container Card (Dashboard style matching reference photo frame) */}
-      <div className="w-full max-w-4xl bg-white rounded-[36px] md:rounded-[44px] shadow-[0_25px_75px_rgba(0,0,0,0.08)] border border-white/90 p-3 md:p-5 relative z-10 flex flex-col md:flex-row min-h-[500px]">
+      <div className="w-full max-w-5xl bg-white rounded-[36px] md:rounded-[44px] shadow-[0_25px_75px_rgba(0,0,0,0.08)] border border-white/90 p-3 md:p-5 relative z-10 flex flex-col md:flex-row min-h-[500px]">
 
-        {/* ================= LEFT SECTION (Yellow Organic Curved Card Matching Pic) ================= */}
-        <div className="w-full md:w-[48%] bg-gradient-to-br from-[var(--theme-yellow)] to-[var(--theme-pink)] rounded-tl-[32px] rounded-bl-[32px] md:rounded-tl-[38px] md:rounded-bl-[38px] md:rounded-tr-[90px] md:rounded-br-[140px] p-6 md:p-8 relative overflow-hidden flex flex-col justify-between min-h-[300px] md:min-h-[460px] shadow-inner">
-
-          {/* Depth-of-field soft blurred 3D background shapes matching reference photo */}
-          {/* Top pinkish soft depth sphere */}
-          <div className="animate-float-blur-1 absolute -top-4 left-1/3 w-28 h-28 rounded-full bg-[var(--theme-pink)]/40 blur-xl pointer-events-none z-0" />
-
-          {/* Center golden soft depth glow sphere */}
-          <div className="animate-float-blur-2 absolute top-1/3 left-1/4 w-36 h-36 rounded-full bg-[var(--theme-yellow)]/50 blur-2xl pointer-events-none z-0" />
-
-          {/* Bottom left glossy 3D white blob shape matching pic */}
-          <div className="animate-soft-blob absolute bottom-10 left-8 w-24 h-11 rounded-[30px] bg-[var(--bg-primary)]/95 backdrop-blur-md shadow-[0_10px_25px_rgba(0,0,0,0.06)] border border-[var(--bg-primary)]/80 pointer-events-none z-20 flex items-center justify-center">
-            <span className="w-3 h-3 rounded-full bg-[var(--theme-yellow)]/80" />
-          </div>
-
-          {/* Top Left Mini Icon */}
-          <div className="relative z-20 flex items-center justify-between">
-            <div className="w-9 h-9 rounded-xl bg-black/10 backdrop-blur-md border border-black/10 flex items-center justify-center text-gray-900 shadow-sm">
-              <Sparkles size={18} className="text-gray-900" />
-            </div>
-          </div>
-
-          {/* Large Bold Typography */}
-          <div className="relative z-20 mt-3 md:mt-5 select-none">
-            <h1 className="animate-title-float font-headline text-5xl sm:text-6xl md:text-7xl font-extrabold text-[#0F172A] leading-[1.03] tracking-tight drop-shadow-sm">
-              AI <br /> Guide
-            </h1>
-            <p className="font-body text-[#1E293B] text-xs sm:text-sm font-semibold mt-3.5 max-w-xs leading-relaxed">
-              Experience the next-gen intelligent career workspace powered by neural models.
-            </p>
-          </div>
-
-          {/* Center Interactive 3D AI Component Canvas (Orbiting Clockwise Right Over Yellow Card) */}
-          <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-auto">
-            <div className="w-full h-full max-w-md max-h-md">
-              <Ai3dCanvas />
-            </div>
-          </div>
+        {/* ================= LEFT SECTION (Login Pic) ================= */}
+        <div className="hidden md:block w-full md:w-[40%] relative overflow-hidden rounded-l-[36px] md:rounded-l-[44px] md:rounded-tr-[90px] md:rounded-br-[140px]">
+          <img src={loginPic} alt="Login" className="w-full h-full object-cover absolute inset-0" />
         </div>
 
         {/* ================= RIGHT SECTION (Login Form) ================= */}
-        <div className="w-full md:w-[52%] p-6 sm:p-8 md:p-12 flex flex-col justify-between relative bg-white rounded-[32px] md:rounded-[44px]">
+        <div className="w-full md:w-[60%] p-6 sm:p-8 md:p-12 flex flex-col justify-between relative bg-white rounded-[32px] md:rounded-[44px]">
 
           {/* Top Bar: Green "AUTHENTICATION LIVE SERVER" Badge + Right Emoji Badge */}
           <div className="flex items-center justify-between mb-4">

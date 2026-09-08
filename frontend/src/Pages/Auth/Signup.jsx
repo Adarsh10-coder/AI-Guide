@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Mail, Lock, Eye, EyeOff, User, ArrowRight, Sparkles, ShieldCheck } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../AuthProvider";
-import Ai3dCanvas from "../../Components/Ai3dCanvas";
+import loginPic from "../../assets/login.png";
 
 export default function SignUpPage() {
   const { signup } = useAuth();
@@ -79,47 +79,15 @@ export default function SignUpPage() {
       `}</style>
 
       {/* Main Container Card matching Login Page */}
-      <div className="w-full max-w-5xl bg-white rounded-[30px] md:rounded-[44px] shadow-[0_25px_75px_rgba(0,0,0,0.08)] border border-white/90 p-3 md:p-5 relative z-10 flex flex-col md:flex-row min-h-[460px]">
+      <div className="w-full max-w-4xl bg-white rounded-[30px] md:rounded-[44px] shadow-[0_25px_75px_rgba(0,0,0,0.08)] border border-white/90 p-3 md:p-5 relative z-10 flex flex-col md:flex-row min-h-[400px]">
         
-        {/* ================= LEFT SECTION (Yellow Organic Curved Card with Ai3dCanvas & Robot1) ================= */}
-        <div className="w-full md:w-[48%] bg-gradient-to-br from-[var(--theme-yellow)] to-[var(--theme-pink)] rounded-tl-[32px] rounded-bl-[32px] md:rounded-tl-[38px] md:rounded-bl-[38px] md:rounded-tr-[90px] md:rounded-br-[140px] p-6 md:p-8 relative overflow-hidden flex flex-col justify-between min-h-[300px] md:min-h-[420px] shadow-inner">
-          
-          {/* Depth-of-field soft blurred background shapes */}
-          <div className="animate-float-blur-1 absolute -top-4 left-1/3 w-28 h-28 rounded-full bg-[var(--theme-pink)]/40 blur-xl pointer-events-none z-0" />
-          <div className="animate-float-blur-2 absolute top-1/3 left-1/4 w-36 h-36 rounded-full bg-[var(--theme-yellow)]/50 blur-2xl pointer-events-none z-0" />
-          
-          {/* Bottom left glossy blob */}
-          <div className="animate-soft-blob absolute bottom-10 left-8 w-24 h-11 rounded-[30px] bg-[var(--bg-primary)]/95 backdrop-blur-md shadow-[0_10px_25px_rgba(0,0,0,0.06)] border border-[var(--bg-primary)]/80 pointer-events-none z-20 flex items-center justify-center">
-            <span className="w-3 h-3 rounded-full bg-[var(--theme-yellow)]/80" />
-          </div>
-
-          {/* Top Left Icon */}
-          <div className="relative z-20 flex items-center justify-between">
-            <div className="w-9 h-9 rounded-xl bg-black/10 backdrop-blur-md border border-black/10 flex items-center justify-center text-gray-900 shadow-sm">
-              <Sparkles size={18} className="text-gray-900" />
-            </div>
-          </div>
-
-          {/* Large Bold Typography */}
-          <div className="relative z-20 mt-3 md:mt-5 select-none">
-            <h1 className="animate-title-float font-headline text-5xl sm:text-6xl md:text-7xl font-extrabold text-[#0F172A] leading-[1.03] tracking-tight drop-shadow-sm">
-              AI <br /> Guide
-            </h1>
-            <p className="font-body text-[#1E293B] text-xs sm:text-sm font-semibold mt-3.5 max-w-xs leading-relaxed">
-              Experience the next-gen intelligent career workspace powered by neural models.
-            </p>
-          </div>
-
-          {/* Center Interactive 3D AI Canvas (Rendering transparent robot1.png with 3D floating shapes) */}
-          <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-auto">
-            <div className="w-full h-full max-w-md max-h-md">
-              <Ai3dCanvas />
-            </div>
-          </div>
+        {/* ================= LEFT SECTION (Login Pic) ================= */}
+        <div className="hidden md:block w-full md:w-[48%] relative overflow-hidden rounded-l-[30px] md:rounded-l-[44px] md:rounded-tr-[90px] md:rounded-br-[140px]">
+          <img src={loginPic} alt="Signup" className="w-full h-full object-cover absolute inset-0" />
         </div>
 
         {/* ================= RIGHT SECTION (Signup Form) ================= */}
-        <div className="w-full md:w-[52%] p-6 sm:p-8 md:p-12 flex flex-col justify-between relative bg-white rounded-[32px] md:rounded-[44px]">
+        <div className="w-full md:w-[52%] p-6 sm:p-8 md:p-10 md:pb-8 flex flex-col justify-between relative bg-white rounded-[32px] md:rounded-[44px]">
           
           {/* Top Bar: Green Badge + Emoji Avatar */}
           <div className="flex items-center justify-between mb-4">
@@ -143,7 +111,7 @@ export default function SignUpPage() {
           <div className="w-full max-w-md mx-auto my-auto">
             
             {/* Header (Exact same font style as Login page's Welcome back header) */}
-            <div className="text-center mb-8 relative">
+            <div className="text-center mb-6 relative">
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-12 bg-[var(--theme-yellow)]/10 blur-xl rounded-full pointer-events-none" />
               
               <h2 className="font-headline text-4xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-gray-900 via-gray-800 to-[var(--theme-yellow)] tracking-tight mb-2 leading-tight">
@@ -154,7 +122,7 @@ export default function SignUpPage() {
               </p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5" autoComplete="off">
+            <form onSubmit={handleSubmit} className="space-y-4" autoComplete="off">
               {/* Full Name Input */}
               <div>
                 <label className="font-body block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wider">
@@ -239,7 +207,7 @@ export default function SignUpPage() {
             </form>
 
             {/* Switch to Login */}
-            <p className="font-body text-xs text-gray-500 text-center mt-6">
+            <p className="font-body text-xs text-gray-500 text-center mt-4">
               Already have an account?{" "}
               <Link to="/login" className="text-[var(--theme-yellow)] font-semibold hover:underline">
                 Login
